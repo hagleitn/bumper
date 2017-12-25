@@ -61,6 +61,33 @@ theta = atan(B/A);
 
 diagonal_arm = [C,2,2];
 
+// mount
+
+mounting_plate = [9, 3, 3/8];
+mounting_leg = [3,3,2];
+mounting_offset = 
+    [shackle_offset[0]-mounting_plate[0]/2+mounting_leg[0]/2, 
+     bumper[1]/2-mounting_plate[1]/2,
+     -mounting_plate[2]-mounting_leg[2]];
+mounting_offset_right = 
+    [bumper[0]-shackle_offset[0]-mounting_plate[0]/2-mounting_leg[0]/2,
+     mounting_offset[1],
+     mounting_offset[2]];
+
+module mount() {
+    union() {
+        cube(mounting_plate);
+        translate(
+            [mounting_plate[0]/2-mounting_leg[0]/2,
+             mounting_plate[1]/2-mounting_leg[1]/2,
+             mounting_plate[2]]) 
+        cube(mounting_leg);
+    }
+}
+
+translate(mounting_offset) mount();
+translate(mounting_offset_right) mount();
+
 module bracket() {
     translate([0,0,-gap])
     union() {
