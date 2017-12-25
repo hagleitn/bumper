@@ -62,7 +62,6 @@ theta = atan(B/A);
 diagonal_arm = [C,2,2];
 
 // mount
-
 mounting_plate = [9, 3, 3/8];
 mounting_leg = [3,3,2];
 mounting_offset = 
