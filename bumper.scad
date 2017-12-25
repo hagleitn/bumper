@@ -136,7 +136,7 @@ module receiver(solid = false) {
                 cube([receiver[0]+2, receiver[1], receiver[1]]);
         
         if (!solid) 
-            translate([4, -1, 1+wall]) 
+            translate([4, -1/16, 1+wall]) 
             rotate([0,90,90]) 
                 cylinder(h=receiver_pin[1], r=receiver_pin[0] / 2);
     }
