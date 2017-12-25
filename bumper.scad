@@ -71,9 +71,12 @@ difference () {
     receiver(true);
 }
 
-translate([bumper[0]/2+receiver[1]/2+wall,3*inch_to_mm,-1*inch_to_mm])
-rotate([0,-90,90])
-receiver();
+difference() {
+    translate([bumper[0]/2+receiver[1]/2+wall,3*inch_to_mm,-1*inch_to_mm])
+        rotate([0,-90,90])
+        receiver();
+    translate([0,0,-10000]) cube(10000);
+}
 
 translate([shackle_offset, 1/2*inch_to_mm, 0]) shackle();
 translate([bumper[0],0,0]) mirror([1,0,0]) translate([shackle_offset, 1/2*inch_to_mm, 0]) shackle();
