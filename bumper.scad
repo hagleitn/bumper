@@ -23,7 +23,7 @@ spacer = [6.5,1.25] * inch_to_mm;
 carrier_length = 5.5 * inch_to_mm;
 carrier_offset = 
     [bumper[0] / 2,
-     max_tire_size / 2 + bumper[1] + gap + 0.8 * inch_to_mm,
+     max_tire_size / 2 + bumper[1] + gap,
      carrier_length + arm_thickness];
 
 // tow receiver
@@ -41,20 +41,37 @@ pin_size = ((7/8) + 0.1) * inch_to_mm;
 shackle = [7/8, 21/8, 2+14/8] * inch_to_mm;
 shackle_offset = [9.5, 1/2, 0] * inch_to_mm;
 
-hinge = [1, 4] *inch_to_mm;
+// hinge
+hinge = [1, 4] * inch_to_mm;
+hinge_offset = [bumper[0]-5*inch_to_mm,bumper[1],bumper[2]-hinge[0]];
 
 // holder for the tire carrier
-bracket = [2, 2+1/2, 1]*inch_to_mm;
+bracket = [2, 2+1/2, 1] * inch_to_mm;
+bracket_back = [2,0.25,2] * inch_to_mm;
+bracket_front = [2,0.25,1/4] * inch_to_mm;
+bracket_offset = [shackle_offset[0], bumper[1], -wall];
 
-cross_bar = bumper[0]-2*shackle_offset[0]+arm_thickness;
-adj = (cross_bar-2*hinge[0])/2;
-diag_bar = sqrt(pow(adj, 2) + pow(max_tire_size/2,2));
-ang = acos(adj/diag_bar);
+// tire carrier
+rotating_arm = [2 * hinge_offset[0] - bumper[0], 2, 2];
+rotating_arm_offset = [bumper[0]-hinge_offset[0], bumper[1] + gap, 0];
+
+cross_bar = bumper[0]-2*shackle_offset[0];
+adj = cross_bar/2;
+height = max_tire_size/2 - arm_thickness + sqrt(2) * arm_thickness/2;
+diag_bar = sqrt(pow(adj, 2) + pow(height,2));
+ang = atan(height/adj);
 
 module bracket() {
-    translate([0,0,-2*inch_to_mm]) cube([2,0.25,2]*inch_to_mm);
-    translate([0,2+1/4,-1/2]*inch_to_mm) cube([2,0.25,1/2]*inch_to_mm);
-    cube(bracket);
+    translate([0,0,-gap])
+    union() {
+        translate([0,0,-bracket[0]]) 
+            cube(bracket_back);
+    
+        translate([0,bracket[1]-wall,-bracket_front[2]]) 
+            cube(bracket_front);
+    
+        cube(bracket);
+    }
 }
 
 module hinge() {
@@ -129,31 +146,25 @@ difference() {
 translate(shackle_offset) shackle();
 translate([bumper[0],0,0]) mirror([1,0,0]) translate(shackle_offset) shackle();
 
-translate([2*hinge[0]/2,0,0])
-union() {
-    translate([bumper[0]-6*hinge[0],bumper[1],bumper[2]-hinge[0]]) 
-        rotate([-90,0,0]) 
+translate(hinge_offset) 
+    rotate([-90,0,0]) 
         hinge();
-    
-    translate([shackle_offset[0]-12*hinge[0]/2, bumper[1]+1*inch_to_mm,0]) 
-        arm(cross_bar+15*hinge[0]/2);
-    
-    translate([shackle_offset[0]-arm_thickness/2,bumper[1]+1*inch_to_mm+arm_thickness,0]) 
-        rotate([0,0,-90+ang]) 
-        translate([arm_thickness,0,0]) 
-        rotate([0,0,90]) 
-            arm(diag_bar+1/4*inch_to_mm);
-    
-    translate([2*shackle_offset[0]+cross_bar-3*hinge[0]/2,0,0]) 
-        mirror([1,0,0]) 
-        translate([shackle_offset[0]+arm_thickness/2+0.5*inch_to_mm,bumper[1]+1*inch_to_mm+arm_thickness,0]) 
-        rotate([0,0,-90+ang]) 
-        translate([arm_thickness,0,0]) 
-        rotate([0,0,90]) 
-            arm(diag_bar+1/4*inch_to_mm);
-}
 
-translate([shackle_offset[0],bumper[1]+bracket[2],-1/4*inch_to_mm]) rotate([90,0,0]) bracket();
+translate([shackle_offset[0],bumper[1]+gap+arm_thickness,0]) 
+    rotate([0,0,-90+ang]) 
+    translate([arm_thickness,0,0]) 
+    rotate([0,0,90]) 
+        arm(diag_bar);    
+
+translate([bumper[0]-shackle_offset[0],bumper[1]+gap+arm_thickness,0]) 
+    rotate([0,0, 90-ang]) 
+    rotate([0,0,90]) 
+        arm(diag_bar);    
+
+translate(rotating_arm_offset) 
+    arm(rotating_arm[0]);    
+
+translate(bracket_offset) rotate([90,0,0]) bracket();
 
 translate(carrier_offset) rotate([0,0,45]) carrier();
 
