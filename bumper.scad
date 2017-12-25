@@ -1,65 +1,65 @@
-inch_to_mm = 25.4;
+$fn = 200;
 
-oem_bumper_no_plastic = 50 * inch_to_mm;
-oem_bumper_plastic = 60.5 * inch_to_mm;
+// all measurements in inches
 
-max_tire_size = 35 * inch_to_mm;
+oem_bumper_no_plastic = 50;
+oem_bumper_plastic = 60.5;
 
-arm_thickness = 2 * inch_to_mm;
+max_tire_size = 35;
+
+arm_thickness = 2;
 
 // main bumper
-bumper = [60.5, 4, 2] * inch_to_mm;
+bumper = [60.5, 4, 2];
 
 //bumper angled cuts
 angle = 60;
-bumper_cut = [20, 8, 3] * inch_to_mm;
-cut_offset = 130;
+bumper_cut = [20, 8, 3];
+cut_offset = 5;
 
 // gap between tire carrier and bumper
-gap = 1 * inch_to_mm;
+gap = 1;
 
 // tire carrier
-spacer = [6.5,1.25] * inch_to_mm;
-carrier_length = 5.5 * inch_to_mm;
+spacer = [6.5,1.25];
+carrier_length = 5.5;
 carrier_offset = 
     [bumper[0] / 2,
      max_tire_size / 2 + bumper[1] + gap,
      carrier_length + arm_thickness];
 
 // tow receiver
-receiver_outer = [0.5,3,3] * inch_to_mm;
-receiver = [6, 2, 2] * inch_to_mm;
-receiver_pin = [5/8,3] * inch_to_mm;
-wall = 1/4 * inch_to_mm;
-receiver_offset = 
-    [bumper[0]/2-receiver[1]/2-wall,
-     1/2 * inch_to_mm,
-     -1 * inch_to_mm];
+receiver_outer = [0.5,3,3];
+receiver = [6, 2, 2];
+receiver_pin = [5/8,3];
+wall = 1/4;
+receiver_offset = [bumper[0]/2-receiver[1]/2-wall, 1/2, -1];
 
 // shackle holders
-pin_size = ((7/8) + 0.1) * inch_to_mm;
-shackle = [7/8, 21/8, 2+14/8] * inch_to_mm;
-shackle_offset = [9.5, 1/2, 0] * inch_to_mm;
+pin_size = 7/8 + 0.1;
+shackle = [7/8, 21/8, 2+14/8];
+shackle_offset = [9.5, 1/2, 0];
 
 // hinge
-hinge = [1, 4] * inch_to_mm;
-hinge_offset = [bumper[0]-5*inch_to_mm,bumper[1],bumper[2]-hinge[0]];
+hinge = [1, 4];
+hinge_offset = [bumper[0]-5,bumper[1],bumper[2]-hinge[0]];
 
 // holder for the tire carrier
-bracket = [2, 2+1/2, 1] * inch_to_mm;
-bracket_back = [2,0.25,2] * inch_to_mm;
-bracket_front = [2,0.25,1/4] * inch_to_mm;
+bracket = [2, 2+1/2, 1];
+bracket_back = [2,0.25,2];
+bracket_front = [2,0.25,1/4];
 bracket_offset = [shackle_offset[0], bumper[1], -wall];
 
 // tire carrier
 rotating_arm = [2 * hinge_offset[0] - bumper[0], 2, 2];
 rotating_arm_offset = [bumper[0]-hinge_offset[0], bumper[1] + gap, 0];
 
-cross_bar = bumper[0]-2*shackle_offset[0];
-adj = cross_bar/2;
-height = max_tire_size/2 - arm_thickness + sqrt(2) * arm_thickness/2;
-diag_bar = sqrt(pow(adj, 2) + pow(height,2));
-ang = atan(height/adj);
+A = (bumper[0]-2*shackle_offset[0])/2;
+B = max_tire_size/2 - arm_thickness + sqrt(2) * arm_thickness/2;
+C = sqrt(pow(A, 2) + pow(B,2));
+theta = atan(B/A);
+
+diagonal_arm = [C,2,2];
 
 module bracket() {
     translate([0,0,-gap])
@@ -91,8 +91,8 @@ module shackle() {
     difference() { 
         cube(shackle);
         
-        translate([-2,21/16*inch_to_mm,(2+7/8)*inch_to_mm]) rotate([0,90,0])
-            cylinder(h=2*inch_to_mm,r=(pin_size/2));
+        translate([-1/2, 21/16, 2+7/8]) rotate([0,90,0])
+            cylinder(h=2,r=(pin_size/2));
     }
 }
 
@@ -110,7 +110,7 @@ module receiver(solid = false) {
                 cube([receiver[0]+2, receiver[1], receiver[1]]);
         
         if (!solid) 
-            translate([4*inch_to_mm, -1, 1*inch_to_mm+wall]) 
+            translate([4, -1, 1+wall]) 
             rotate([0,90,90]) 
                 cylinder(h=receiver_pin[1], r=receiver_pin[0] / 2);
     }
@@ -120,11 +120,11 @@ module bumper() {
     difference () {
         cube(bumper);
         
-        translate([cut_offset,0,-1]) rotate([0,0,90+angle]) 
+        translate([cut_offset,0,-1/16]) rotate([0,0,90+angle]) 
             cube(bumper_cut);
         
         mirror([1,0,0]) 
-            translate([-bumper[0]+cut_offset,0,-1]) 
+            translate([-bumper[0]+cut_offset,0,-1/16]) 
             rotate([0,0,90+angle]) 
                 cube(bumper_cut);
     
@@ -151,15 +151,15 @@ translate(hinge_offset)
         hinge();
 
 translate([shackle_offset[0],bumper[1]+gap+arm_thickness,0]) 
-    rotate([0,0,-90+ang]) 
+    rotate([0,0,-90+theta]) 
     translate([arm_thickness,0,0]) 
     rotate([0,0,90]) 
-        arm(diag_bar);    
+        arm(diagonal_arm[0]);    
 
 translate([bumper[0]-shackle_offset[0],bumper[1]+gap+arm_thickness,0]) 
-    rotate([0,0, 90-ang]) 
+    rotate([0,0, 90-theta]) 
     rotate([0,0,90]) 
-        arm(diag_bar);    
+        arm(diagonal_arm[0]);    
 
 translate(rotating_arm_offset) 
     arm(rotating_arm[0]);    
