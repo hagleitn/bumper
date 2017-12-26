@@ -23,16 +23,22 @@ module arm(height, thickness=arm_thickness, angle=0) {
     }
 }
 
+module table() {
 translate([0,0,table[2]]) cube([table[0],table[1],plate_thickness]);
 
 translate([0,0,surface_height]) cube([table[0],table[1],plate_thickness]);
 
 arm(table[2]);
-translate([table[0]-arm_thickness,0,0]) arm(table[2]);
-translate([table[0]-arm_thickness,table[1]-arm_thickness,0]) arm(table[2]);
-translate([0,table[1]-arm_thickness,0]) arm(table[2]);
+    translate([table[0]-arm_thickness,0,0]) arm(table[2]);
+    translate([table[0]-arm_thickness,table[1]-arm_thickness,0]) arm(table[2]);
+    translate([0,table[1]-arm_thickness,0]) arm(table[2]);
+    
+    translate([0,arm_thickness/2,table[2]-5]) rotate([0,90,0]) cylinder(h=table[0], r=rod_thickness/2);
+    translate([0,table[1]-arm_thickness/2,table[2]-5]) rotate([0,90,0]) cylinder(h=table[0], r=rod_thickness/2);
+    translate([arm_thickness/2,table[1],table[2]-5]) rotate([90,0,0]) cylinder(h=table[1], r=rod_thickness/2);
+    translate([table[0]-arm_thickness/2,table[1],table[2]-5]) rotate([90,0,0]) cylinder(h=table[1], r=rod_thickness/2);
+}
 
-translate([0,arm_thickness/2,table[2]-5]) rotate([0,90,0]) cylinder(h=table[0], r=rod_thickness/2);
-translate([0,table[1]-arm_thickness/2,table[2]-5]) rotate([0,90,0]) cylinder(h=table[0], r=rod_thickness/2);
-translate([arm_thickness/2,table[1],table[2]-5]) rotate([90,0,0]) cylinder(h=table[1], r=rod_thickness/2);
-translate([table[0]-arm_thickness/2,table[1],table[2]-5]) rotate([90,0,0]) cylinder(h=table[1], r=rod_thickness/2);
+function table_dim() = table;
+
+table();
