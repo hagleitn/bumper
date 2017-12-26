@@ -2,9 +2,9 @@ $fn = 200;
 
 // all measurements in inches
 arm_thickness = 2;
-seat = 15;
-height = 30 - arm_thickness;
-thickness = 1/2;
+seat = 13;
+height = 24 - arm_thickness;
+thickness = 1/4;
 
 module arm(height, thickness=arm_thickness, angle=0) {
     length = height/cos(angle) + thickness*tan(angle);
