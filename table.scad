@@ -1,7 +1,7 @@
 $fn = 200;
 
 // all measurements in inches
-arm_thickness = 1+1/2;
+arm_thickness = 1+1/4;
 plate_thickness = 1/4;
 rod_thickness = 1/2;
 

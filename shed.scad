@@ -1,11 +1,11 @@
 $fn = 200;
 
-shed_outer = [10*12,8*12,6*12];
+shed_outer = [10*12,6*12,6*12];
 wall = 1/4;
 
 shed_inner = shed_outer - [2*wall,2*wall,2*wall];
 
-door = [shed_outer[0]/2, 2*wall, shed_outer[2]-8];
+door = [shed_outer[0]/2, 2*wall, shed_outer[2]-12];
 
 module shed() {
     difference() {

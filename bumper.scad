@@ -7,7 +7,7 @@ oem_bumper_plastic = 60.5;
 
 max_tire_size = 35;
 
-arm_thickness = 2;
+arm_thickness = 1+1/2;
 
 // main bumper
 bumper = [60.5, 4, 2];
@@ -45,8 +45,8 @@ hinge = [1, 4];
 hinge_offset = [bumper[0]-5,bumper[1],bumper[2]-hinge[0]];
 
 // holder for the tire carrier
-bracket = [2, 2+1/2, 1];
-bracket_back = [2,0.25,2];
+bracket = [2, arm_thickness+1/2, 1];
+bracket_back = [2,0.25,arm_thickness];
 bracket_front = [2,0.25,1/4];
 bracket_offset = [shackle_offset[0], bumper[1], -wall];
 
@@ -90,7 +90,7 @@ translate(mounting_offset_right) mount();
 module bracket() {
     translate([0,0,-gap])
     union() {
-        translate([0,0,-bracket[0]]) 
+        translate([0,0,-arm_thickness]) 
             cube(bracket_back);
     
         translate([0,bracket[1]-wall,-bracket_front[2]]) 

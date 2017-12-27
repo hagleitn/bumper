@@ -1,8 +1,8 @@
 $fn = 200;
 
 // all measurements in inches
-arm_thickness = 2;
-seat = 13;
+arm_thickness = 1+1/4;
+seat = 12;
 height = 24 - arm_thickness;
 thickness = 1/4;
 
