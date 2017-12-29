@@ -14,6 +14,7 @@ e = [[1,0,0],[0,1,0],[0,0,1]];
 
 plate = 1/8;
 
+function cart_dim() = [bottom[0]+grip,bottom[1],2*height];
 
 module arm(height, thickness=arm_thickness, angle=0) {
     length = height/cos(angle) + thickness*tan(angle);
@@ -62,26 +63,36 @@ module square(a,b,t,angle=0) {
     }
 }
 
-translate(-e[0]*(bottom[0]-platform[0])) square(bottom[0],bottom[1],arm_thickness);
-translate(e[2]*height) square(platform[0]+1,platform[1], arm_thickness,-15);
-translate(e[2]*height/2) square(platform[0],platform[1], arm_thickness);
-
-arm(height+arm_thickness);
-translate(e[0]*(platform[0]+arm_thickness)) arm(height+6);
-translate(e[0]*(platform[0]+arm_thickness)+e[1]*(platform[1]+arm_thickness)) arm(height+6);
-translate(e[1]*(platform[1]+arm_thickness)) arm(height+arm_thickness);
-
-translate([platform[0]+2*arm_thickness,arm_thickness/2,height+arm_thickness/2+5.5])
-rotate(-e[0]*90)
-union() {
-    hook(1/2,grip,platform[1]/2+arm_thickness);
-    translate(e[2]*(platform[1]+arm_thickness)) rotate(e[0]*180) hook(1/2,grip,platform[1]/2+arm_thickness);
+module cart() {
+    translate(e[0]*(bottom[0]-platform[0])+e[2]*2*wheel[0])
+    union() {
+        translate(-e[0]*(bottom[0]-platform[0])) square(bottom[0],bottom[1],arm_thickness);
+        translate(e[2]*height) square(platform[0]+1,platform[1], arm_thickness,-15);
+        translate(e[2]*height/2) square(platform[0],platform[1], arm_thickness);
+        
+        arm(height+arm_thickness);
+        translate(e[0]*(platform[0]+arm_thickness)) arm(height+6);
+        translate(e[0]*(platform[0]+arm_thickness)+e[1]*(platform[1]+arm_thickness)) arm(height+6);
+        translate(e[1]*(platform[1]+arm_thickness)) arm(height+arm_thickness);
+        
+        translate([platform[0]+2*arm_thickness,arm_thickness/2,height+arm_thickness/2+5.5])
+        rotate(-e[0]*90)
+        union() {
+            hook(1/2,grip,platform[1]/2+arm_thickness);
+            translate(e[2]*(platform[1]+arm_thickness)) rotate(e[0]*180) hook(1/2,grip,platform[1]/2+arm_thickness);
+        }
+        
+        //translate([-(bottom[0]-platform[0]),0,arm_thickness]) arm(height+2.5,arm_thickness, 36);
+        //translate([-(bottom[0]-platform[0]),arm_thickness+bottom[1],arm_thickness]) arm(height+2.5,arm_thickness, 36);
+        
+        translate([-(bottom[0]-platform[0]),0,arm_thickness]) arm(height,arm_thickness, 18);
+        translate([-(bottom[0]-platform[0]),arm_thickness+bottom[1],arm_thickness]) arm(height,arm_thickness, 18);
+        
+        translate(-e[2]*wheel[0]-e[0]*(bottom[0]-platform[0]-wheel[0])+e[1]*(arm_thickness/2)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
+        translate(-e[2]*wheel[0]-e[0]*(bottom[0]-platform[0]-wheel[0])+e[1]*(bottom[1]+2*arm_thickness)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
+        translate(-e[2]*wheel[0]+e[0]*(platform[0]+wheel[0]/2)+e[1]*(arm_thickness/2)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
+        translate(-e[2]*wheel[0]+e[0]*(platform[0]+wheel[0]/2)+e[1]*(bottom[1]+2*arm_thickness)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
+    }
 }
 
-translate([-(bottom[0]-platform[0]),0,arm_thickness]) arm(height+2.5,arm_thickness, 36);
-translate([-(bottom[0]-platform[0]),arm_thickness+bottom[1],arm_thickness]) arm(height+2.5,arm_thickness, 36);
-
-translate(-e[2]*wheel[0]-e[0]*(bottom[0]-platform[0]-wheel[0])+e[1]*(arm_thickness/2)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
-translate(-e[2]*wheel[0]-e[0]*(bottom[0]-platform[0]-wheel[0])+e[1]*(bottom[1]+2*arm_thickness)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
-translate(-e[2]*wheel[0]+e[0]*(platform[0]+wheel[0]/2)+e[1]*(arm_thickness/2)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
-translate(-e[2]*wheel[0]+e[0]*(platform[0]+wheel[0]/2)+e[1]*(bottom[1]+2*arm_thickness)) rotate(90*e[0]) cylinder(r=wheel[0],h=wheel[1]);
+cart();
